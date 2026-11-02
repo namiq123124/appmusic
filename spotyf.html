@@ -1,0 +1,1338 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spotify SPA (Klassik CSS)</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+    <style>
+        /* Əsas Sıfırlamalar */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #000000;
+            color: #ffffff;
+            font-family: Arial, Helvetica, sans-serif;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow: hidden;
+        }
+
+        /* Scrollbar Stili */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #121212;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #282828;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3e3e3e;
+        }
+
+        input[type="range"] {
+            accent-color: #1DB954;
+        }
+
+        /* Konteyner Düzülüşü */
+        .app-container {
+            display: flex;
+            flex: 1;
+            height: calc(100vh - 90px);
+            gap: 10px;
+            padding: 10px;
+        }
+
+        /* Sol Menyular (Sidebar) */
+        .sidebar {
+            width: 320px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background-color: #000000;
+        }
+
+        .head {
+            width: 100%;
+            background-color: #121212;
+            padding: 15px;
+            text-align: center;
+            border-radius: 15px;
+            border: 1px solid #282828;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+        
+        .logo-icon {
+            font-size: 35px;
+            color: #1DB954;
+        }
+
+        .head p {
+            font-family: 'Trebuchet MS', Arial, sans-serif;
+            font-size: 22px;
+            font-style: italic;
+            font-weight: bold;
+            color: #1DB954;
+        }
+
+        .nav-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .nav-btn {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            width: 100%;
+            padding: 12px 18px;
+            background-color: #181818;
+            border: 1px solid #282828;
+            border-radius: 10px;
+            color: #b3b3b3;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .nav-btn:hover {
+            color: #ffffff;
+            background-color: #282828;
+            border-color: #1DB954;
+        }
+
+        /* Kitabxana Bölməsi */
+        .library-box {
+            flex: 1;
+            background-color: #121212;
+            border: 1px solid #282828;
+            border-radius: 15px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            overflow: hidden;
+        }
+
+        .library-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: #82df44;
+            font-weight: 600;
+        }
+
+        .library-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .library-title:hover {
+            color: #ffffffaf;
+        }
+
+        .plus-btn-wrapper {
+            position: relative;
+        }
+
+        .plus-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: none;
+            background: transparent;
+            color: #ffffff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+
+        .plus-btn:hover {
+            background-color: #282828;
+        }
+
+        /* Dropdown Menyusu */
+        .plus-dropdown {
+            position: absolute;
+            right: 0;
+            top: 40px;
+            width: 190px;
+            background-color: #282828;
+            border: 1px solid #3e3e3e;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            z-index: 50;
+            padding: 6px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .plus-dropdown.hidden {
+            display: none;
+        }
+
+        .dropdown-item {
+            text-align: left;
+            padding: 10px;
+            font-size: 14px;
+            color: #cccccc;
+            background: transparent;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: background 0.2s;
+        }
+
+        .dropdown-item:hover {
+            background-color: #3e3e3e;
+            color: #ffffff;
+        }
+
+        .liked-playlist-card {
+            padding: 12px;
+            background-color: #181818;
+            border: 1px solid #282828;
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: background 0.2s;
+        }
+
+        .liked-playlist-card:hover {
+            background-color: #282828;
+        }
+
+        .liked-icon-box {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #4338ca, #c084fc);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+        }
+
+        .folder-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-top: 5px;
+        }
+
+        .folder-item {
+            padding: 10px;
+            background-color: #181818;
+            border: 1px solid #282828;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 14px;
+            transition: background 0.2s;
+        }
+
+        .folder-item:hover {
+            background-color: #282828;
+        }
+
+        /* Əsas */
+        .main-content {
+            flex: 1;
+            background-color: #121212;
+            border: 1px solid #282828;
+            border-radius: 16px;
+            padding: 30px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Kartlar */
+        .song-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 16px;
+            width: 100%;
+        }
+
+        .song-card {
+            background-color: #181818;
+            padding: 16px;
+            border-radius: 12px;
+            border: 1px solid #282828;
+            position: relative;
+            transition: background 0.2s;
+            cursor: pointer;
+        }
+
+        .song-card:hover {
+            background-color: #282828;
+        }
+
+        .card-actions {
+            position: absolute;
+            top: 24px;
+            right: 24px;
+            display: flex;
+            gap: 8px;
+            z-index: 10;
+        }
+
+        .action-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: rgba(0, 0, 0, 0.7);
+            border: none;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .action-btn:hover {
+            background-color: #000000;
+        }
+
+        .action-btn.delete:hover {
+            background-color: #dc2626;
+        }
+
+        .song-cover {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+
+        .song-title {
+            font-size: 18px;
+            font-weight: bold;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .song-album {
+            font-size: 14px;
+            color: #a7a7a7;
+            margin-top: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Qeydiyyat & Əlavə Et */
+        .form-container {
+            width: 100%;
+            max-width: 550px;
+            margin: auto;
+            background-color: #181818;
+            padding: 35px;
+            border-radius: 16px;
+            border: 1px solid #282828;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+        }
+
+        .form-title {
+            font-size: 28px;
+            font-weight: bold;
+            color: #1DB954;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .form-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #d1d5db;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 14px;
+            background-color: #282828;
+            border: 1px solid #374151;
+            border-radius: 10px;
+            color: #ffffff;
+            font-size: 15px;
+            outline: none;
+        }
+
+        .form-input:focus {
+            border-color: #1DB954;
+        }
+
+        .form-btn {
+            width: 100%;
+            padding: 14px;
+            background-color: #1DB954;
+            color: #000000;
+            font-weight: bold;
+            font-size: 16px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background 0.2s;
+        }
+
+        .form-btn:hover {
+            background-color: #1ed760;
+        }
+
+        /* Pleyer */
+        .player-footer {
+            height: 90px;
+            background-color: #181818;
+            border-top: 1px solid #282828;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+        }
+
+        .player-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 25%;
+        }
+
+        .player-cover-img {
+            width: 48px;
+            height: 48px;
+            border-radius: 4px;
+            object-fit: cover;
+        }
+
+        .player-controls {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            width: 50%;
+            max-width: 600px;
+        }
+
+        .controls-buttons {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .ctrl-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: #000000;
+            color: #fffdfd;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .ctrl-btn.play {
+            width: 40px;
+            height: 40px;
+            background-color: #ffffff;
+            color: #000000d8;
+        }
+
+        .progress-bar-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+        }
+
+        .time-stamp {
+            font-size: 12px;
+            color: #9aa7be;
+            width: 40px;
+        }
+
+        .player-volume {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 8px;
+            width: 25%;
+        }
+
+        .information {
+            background-color: #121212;
+            padding: 20px;
+            color: #e5ece6;
+        }
+
+        .information-title {
+            font-weight: bold;
+            font-size: 16px;
+            margin-top: 15px;
+            margin-bottom: 8px;
+            color: #34be09;
+        }
+
+        .information ul {
+            list-style: none;
+            display: flex;
+            flex-direction: row; 
+            flex-wrap: wrap;     
+            gap: 15px;         
+            padding: 0;
+            margin: 0;
+        }
+
+        .information ul li {
+            color: #a7a7a7;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .information ul li:hover {
+            color: #ffffff;
+            text-decoration: none;
+        }
+
+        .owner {
+            opacity: 0.5;
+            width: fit-content;
+            margin-left: auto;
+        }
+
+        .text-red { color: #ef4444; }
+        .text-[#1DB954] { color: #1DB954; }
+        .text-yellow { color: #eab308; }
+        .hidden { display: none !important; }
+        
+/* planset */
+@media (max-width: 900px) {
+    .app-container {
+        gap: 8px;
+        padding: 8px;
+    }
+
+    .sidebar {
+        width: 240px;
+    }
+
+    .main-content {
+        padding: 20px;
+    }
+
+    .song-grid {
+        grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    }
+}
+
+/* MOBILE */
+@media (max-width: 600px) {
+
+    body {
+        height: 100dvh;
+        min-height: 100dvh;
+        overflow: hidden;
+    }
+
+    .app-container {
+        flex-direction: column;
+        height: auto;
+        min-height: 0;
+        flex: 1;
+        padding: 6px;
+        gap: 6px;
+        overflow: hidden;
+    }
+
+    
+    .sidebar {
+        width: 100%;
+        height: auto;
+        flex-shrink: 0;
+        gap: 6px;
+    }
+
+    .head {
+        padding: 8px;
+        border-radius: 10px;
+    }
+
+    .logo-icon {
+        font-size: 23px;
+    }
+
+    .head p {
+        font-size: 18px;
+    }
+
+    .sidebar > .nav-group {
+        flex-direction: row;
+        gap: 6px;
+    }
+
+    .sidebar > .nav-group .nav-btn {
+        flex: 1;
+        justify-content: center;
+        padding: 11px 5px;
+        font-size: 12px;
+    }
+
+    .sidebar > .nav-group .nav-btn i {
+        font-size: 14px;
+    }
+
+    .library-box {
+        display: none;
+    }
+
+    
+    .main-content {
+        flex: 1;
+        min-height: 0;
+        width: 100%;
+        padding: 15px 10px;
+        border-radius: 12px;
+        overflow-y: auto;
+    }
+
+    .song-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .song-card {
+        padding: 9px;
+        min-width: 0;
+    }
+
+    .song-cover {
+        height: auto;
+        aspect-ratio: 1 / 1;
+    }
+
+    .song-title {
+        font-size: 14px;
+    }
+
+    .song-album {
+        font-size: 12px;
+    }
+
+    .card-actions {
+        top: 15px;
+        right: 15px;
+        gap: 5px;
+    }
+
+    .action-btn {
+        width: 29px;
+        height: 29px;
+        font-size: 12px;
+    }
+
+    /* Formlar */
+    .form-container {
+        padding: 20px 14px;
+        margin: 10px auto;
+    }
+
+    .form-title {
+        font-size: 23px;
+    }
+
+    .form-input {
+        font-size: 16px;
+    }
+
+    
+    .player-footer {
+        height: auto;
+        min-height: 115px;
+        flex-shrink: 0;
+        padding: 10px 12px;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        grid-template-rows: auto auto;
+        gap: 8px;
+    }
+
+    .player-info {
+        width: 100%;
+        min-width: 0;
+        gap: 8px;
+    }
+
+    .player-cover-img {
+        width: 38px;
+        height: 38px;
+        flex-shrink: 0;
+    }
+
+    .player-info p {
+        max-width: 100%;
+    }
+
+    .player-controls {
+        width: 100%;
+        max-width: none;
+        grid-column: 1 / -1;
+        gap: 5px;
+    }
+
+    .controls-buttons {
+        gap: 25px;
+    }
+
+    .ctrl-btn {
+        width: 30px;
+        height: 30px;
+    }
+
+    .ctrl-btn.play {
+        width: 36px;
+        height: 36px;
+    }
+
+    .progress-bar-container {
+        gap: 7px;
+    }
+
+    .time-stamp {
+        font-size: 10px;
+        width: 35px;
+    }
+
+    .player-volume {
+        display: none;
+    }
+
+    
+    .information {
+        display: none;
+    }
+}
+
+
+@media (max-width: 360px) {
+    .song-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 7px;
+    }
+
+    .song-card {
+        padding: 7px;
+    }
+
+    .song-title {
+        font-size: 12px;
+    }
+
+    .song-album {
+        font-size: 11px;
+    }
+
+    .controls-buttons {
+        gap: 18px;
+    }
+}
+
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <!-- Sol Menyu -->
+        <aside class="sidebar">
+            <div class="head">
+                <i class="fa-solid fa-music logo-icon"></i>
+                <p>Spotify SPA</p>   
+            </div>
+
+            <div class="nav-group">
+                <button class="nav-btn" onclick="navigate('home')">
+                    <i class="fa-solid fa-house"></i>
+                    <span>Ana Səhifə</span>
+                </button>
+
+                <button class="nav-btn" onclick="navigate('search')">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <span>Axtarış</span>
+                </button>
+            </div>
+
+            <!-- Kitabxana -->
+            <div class="library-box">
+                <div class="library-header">
+                    <div class="library-title" onclick="navigate('home')">
+                        <i class="fa-solid fa-book-open"></i>
+                        <span>Kitabxana (Library)</span>
+                    </div>
+                    <div class="plus-btn-wrapper">
+                        <button onclick="togglePlusMenu(event)" class="plus-btn">
+                            <i class="fa-solid fa-plus"></i>
+                        </button>
+                        <div id="plus-dropdown" class="plus-dropdown hidden">
+                            <button onclick="navigate('add')" class="dropdown-item">
+                                <i class="fa-solid fa-music text-[#1DB954]"></i> Mahnı Əlavə Et
+                            </button>
+                            <button onclick="createFolder()" class="dropdown-item">
+                                <i class="fa-solid fa-folder-plus text-yellow"></i> Folder (Qovluq) Yarat
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="overflow-y: auto; flex: 1;">
+                    <div onclick="filterLikedSongs()" class="liked-playlist-card">
+                        <div class="liked-icon-box">
+                            <i class="fa-solid fa-heart"></i>
+                        </div>
+                        <div>
+                            <p style="font-weight: bold; font-size: 14px;">Bəyəndikləriniz</p>
+                            <p style="font-size: 12px; color: #a7a7a7;">Pleyllist • <span id="liked-count">0</span> mahnı</p>
+                        </div>
+                    </div>
+
+                    <div id="folders-container" class="folder-list"></div>
+                </div>
+            </div>
+
+            <div class="nav-group">
+                <button class="nav-btn" onclick="navigate('login')">
+                    <i class="fa-solid fa-user"></i>
+                    <span>Qeydiyyat</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Mərkəzi Kontent Səhifəsi -->
+        <main id="content-area" class="main-content">
+        </main>
+    </div>
+        
+    <!-- Pleyer Paneli -->
+    <footer class="player-footer">
+        <div class="player-info">
+            <img id="player-cover" src="" class="player-cover-img hidden">
+            <div id="player-icon-placeholder" style="width: 48px; height: 48px; background-color: #282828; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: #a7a7a7;">
+                <i class="fa-solid fa-music"></i>
+            </div>
+            <div style="overflow: hidden;">
+                <p id="player-title" style="font-weight: 600; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Mahnı seçilməyib</p>
+                <p id="player-artist" style="font-size: 12px; color: #a7a7a7;">-</p>
+            </div>
+        </div>
+
+        <div class="player-controls">
+            <div class="controls-buttons">
+                <button onclick="beforeSong()" class="ctrl-btn"><i class="fa-solid fa-left-long"></i></button>
+                <button onclick="playSong()" class="ctrl-btn play"><i id="play-btn-icon" class="fa-solid fa-play"></i></button>
+                <button onclick="nextSong()" class="ctrl-btn"><i class="fa-solid fa-right-long"></i></button>
+            </div>
+            
+            <div class="progress-bar-container">
+                <span id="current-time" class="time-stamp" style="text-align: right;">00:00</span>
+                <input type="range" id="seek-bar" value="0" min="0" max="100" oninput="changeSeek()" style="width: 100%; height: 4px; cursor: pointer;">
+                <span id="total-duration" class="time-stamp">00:00</span>
+            </div>
+        </div>
+
+        <div class="player-volume">
+            <i class="fa-solid fa-volume-high" style="color: #a7a7a7; font-size: 14px;"></i>
+            <input type="range" id="volume-bar" oninput="changeVolume()" style="width: 96px; height: 4px; cursor: pointer;" min="0" max="1" step="0.1" value="1">
+        </div>
+    </footer>
+
+    <div class="information">
+        <p class="information-title">Company</p>
+        <ul>
+            <li>About</li>
+            <li>Jobs</li>
+            <li>For the Record</li>
+        </ul>
+
+        <p class="information-title">Useful links</p>
+        <ul>
+            <li>Support</li>
+            <li>Free Mobile App</li>
+            <li>Top Song Lyrics</li>
+        </ul>
+
+        <p class="information-title">Communities</p>
+        <ul>
+            <li>For Artists</li>
+            <li>For Creators</li>
+            <li>For Authors</li>
+            <li>Developers</li>
+            <li>Investors</li>
+            <li>Vendors</li>
+        </ul>
+        <div class="owner">
+            @NAMIQ KHUDAEV
+        </div>
+    </div>
+
+    <script>
+        let mahnilar = [
+            { id: 'mahni1', title: 'Flört - Manolya', album: 'Türk Parçalar', cover: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=300&h=300&fit=crop', audioUrl: 'Flört - Manolya [uvbg0l9SpUA].mp3', isLiked: true, views: 4200 },
+            { id: 'mahni2', title: 'Söz Olmasaydı (Piano)', album: 'Retro Azərbaycan', cover: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=300&h=300&fit=crop', audioUrl: 'Söz Olmasaydı (Piano Müşayiətində) [qI2jD712b-I].mp3', isLiked: false, views: 1850 },
+            { id: 'mahni3', title: 'Duman - Bal', album: 'Türk Parçalar', cover: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSSyBxl6NbjGmuzcPwOy_lFWVplJwyYuMeFPtXHKrWGjQ&s=10', audioUrl: 'Duman - Bal [NUXbWSsMLSI].mp3', isLiked: false, views: 1500 },
+            { id: 'mahni4', title: 'THeavenly - Cigarettes After', album: 'Xarici Musiqi', cover: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSoIC_3qONtEoowIhpI4KeMntUmVGN2r3PC4TDlcORXA_HdgRHifPX8JarQ&s=10', audioUrl: 'Heavenly - Cigarettes After .mp3', isLiked: false, views: 23000 },
+            { id: 'mahni5', title: 'The Neighbourhood - A Little Death', album: 'Xarici Musiqi', cover: 'https://images.genius.com/9bd872f4642e685637ceebec3b710a34.1000x1000x1.png', audioUrl: 'The Neighbourhood - A Little Death (Official Audio).mp3', isLiked: false, views: 100000 },
+            { id: 'mahni6', title: 'Angel', album: 'Xarici Musiqi', cover: 'https://i.ytimg.com/vi/fnZ-34AQTVE/maxresdefault.jpg', audioUrl: 'Angel [fnZ-34AQTVE].mp3', isLiked: false, views: 5000 },
+            { id: 'mahni7', title: 'The Chain (2004 Remaster)', album: 'Xarici Musiqi', cover: 'https://i.ytimg.com/vi/d1QgQI83PQo/maxresdefault.jpg', audioUrl: 'The Chain (2004 Remaster) [d1QgQI83PQo].mp3', isLiked: false, views: 30000 },
+            { id: 'mahni8', title: 'Kiltro - "Curicó" ', album: 'Xarici Musiqi', cover: 'https://i.ytimg.com/vi/qbiGHO_WlmU/maxresdefault.jpg', audioUrl: 'Kiltro - _Curicó_ (Official Audio) [qbiGHO_WlmU].mp3', isLiked: false, views: 2300 },
+            { id: 'mahni9', title: 'Rick Astley - Never Gonna Give You Up', album: 'Xarici Musiqi', cover: 'https://i.ytimg.com/vi/dQw4w9WgXcQ/maxresdefault.jpg', audioUrl: 'Rick Astley - Never Gonna Give You Up (Official Video) (4K Remaster).mp3', isLiked: false, views: 14500 },
+            { id: 'mahni10', title: 'Her s - Harvey', album: 'Xarici Musiqi', cover: 'https://i.ytimg.com/vi/T0Ry1m0Blug/maxresdefault.jpg', audioUrl: 'Her s - Harvey.mp3', isLiked: false, views: 1000 }
+
+        ];  
+        let folders = [];
+
+        async function fetchSongs() {
+            try {
+                const response = await fetch('http://localhost:8080/api/songs');
+                const data = await response.json();
+                if (data && data.length > 0) {
+                    mahnilar = data.map(song => ({
+                        id: 'mahni' + song.id,
+                        title: song.title,
+                        album: song.album,
+                        cover: song.coverUrl || 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=300&h=300&fit=crop',
+                        audioUrl: song.audioPath,
+                        isLiked: false,
+                        views: Math.floor(Math.random() * 5000) + 100
+                    }));
+                }
+                if (activePage === 'home') renderHome(mahnilar);
+                updateLikedCount();
+            } catch (error) {
+                console.error("Serverlə əlaqə qurulmadı, daxili massiv işləyir:", error);
+            }
+        }
+
+        function togglePlusMenu(event) {
+            event.stopPropagation();
+            const dropdown = document.getElementById('plus-dropdown');
+            dropdown.classList.toggle('hidden');
+        }
+
+        window.onclick = function() {
+            document.getElementById('plus-dropdown').classList.add('hidden');
+        }
+
+        function createFolder() {
+            const folderName = prompt("Yeni qovluğun adını daxil edin:");
+            if (folderName) {
+                folders.push({ id: Date.now(), name: folderName });
+                renderFolders();
+            }
+        }
+
+        function renderFolders() {
+            const container = document.getElementById('folders-container');
+            container.innerHTML = folders.map(f => `
+                <div class="folder-item">
+                    <div style="display: flex; align-items: center; gap: 8px; overflow: hidden;">
+                        <i class="fa-solid fa-folder text-yellow"></i>
+                        <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${f.name}</span>
+                    </div>
+                    <button onclick="deleteFolder(${f.id})" style="background: none; border: none; color: #a7a7a7; cursor: pointer;"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+            `).join('');
+        }
+
+        function deleteFolder(id) {
+            folders = folders.filter(f => f.id !== id);
+            renderFolders();
+        }
+
+        function toggleLike(event, index) {
+            event.stopPropagation();
+            mahnilar[index].isLiked = !mahnilar[index].isLiked;
+            updateLikedCount();
+            if (activePage === 'home') renderHome(mahnilar);
+            else if (activePage === 'liked') filterLikedSongs();
+        }
+
+        function updateLikedCount() {
+            const likedCount = mahnilar.filter(m => m.isLiked).length;
+            document.getElementById('liked-count').innerText = likedCount;
+        }
+
+        function filterLikedSongs() {
+            activePage = 'liked';
+            const likedList = mahnilar.filter(m => m.isLiked);
+            renderCustomList(likedList, "Bəyəndiyiniz Mahnılar ❤️");
+        }
+
+        async function handleLogin(event) {
+            event.preventDefault();
+            const username = document.getElementById('input-name').value;
+            const email = document.getElementById('input-email').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                const response = await fetch('http://localhost:8080/api/users/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, email, password })
+                });
+
+                if (response.ok) {
+                    alert(`Uğurla qeydiyyatdan keçdiniz: ${email}`);
+                    navigate('home');
+                } else {
+                    alert("Qeydiyyat zamanı xəta baş verdi.");
+                }
+            } catch (error) {
+                alert("Serverə qoşulmaq mümkün olmadı!");
+            }
+        }
+
+        async function addNewSong(event) {
+            event.preventDefault();
+            const audioFileInput = document.getElementById('new-audio-file');
+            const coverFileInput = document.getElementById('new-cover-file');
+            
+            const audioFile = audioFileInput.files[0];
+            const coverFile = coverFileInput.files[0];
+
+            if (!audioFile) {
+                alert("Zəhmət olmasa MP3 fayl seçin!");
+                return;
+            }
+
+            const audioUrl = URL.createObjectURL(audioFile);
+            const coverUrl = coverFile 
+                ? URL.createObjectURL(coverFile) 
+                : 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=300&h=300&fit=crop';
+
+            const newSong = {
+                id: 'mahni' + Date.now(),
+                title: document.getElementById('new-title').value,
+                album: document.getElementById('new-album').value,
+                cover: coverUrl,
+                audioUrl: audioUrl,
+                isLiked: false,
+                views: 10
+            };
+
+            try {
+                await fetch('http://localhost:8080/api/songs', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        title: newSong.title,
+                        album: newSong.album,
+                        coverUrl: newSong.cover,
+                        audioPath: newSong.audioUrl
+                    })
+                });
+            } catch (error) {
+                console.log("Backend işləmir, lokal əlavə olunur.");
+            }
+
+            mahnilar.push(newSong);
+            alert("Mahnı uğurla əlavə olundu!");
+            fetchSongs();
+            navigate('home');
+        }
+
+        const audio = new Audio();
+        let isPlaying = false;
+        let currentSongIndex = null;
+        let activePage = 'home';
+
+        navigate('home');
+        fetchSongs();
+
+        function navigate(page) {
+            activePage = page;
+            const content = document.getElementById('content-area');
+            
+            if (page === 'home') {
+                renderHome(mahnilar);
+            } else if (page === 'search') {
+                content.innerHTML = `
+                    <div style="max-width: 700px; margin: 0 auto; width: 100%;">
+                        <h1 style="font-size: 28px; font-weight: bold; color: #1DB954; margin-bottom: 16px; text-align: center;">Canlı Axtarış</h1>
+                        <input type="text" id="search-input" onkeyup="filterSongs()" placeholder="Mahnı adı və ya albom yazın..." class="form-input" style="margin-bottom: 24px;">
+                        <div id="search-results" class="song-grid"></div>
+                    </div>
+                `;
+                filterSongs();
+            } else if (page === 'add') {
+                content.innerHTML = `
+                    <div class="form-container">
+                        <h1 class="form-title">Yeni Mahnı Əlavə Et</h1>
+                        <form onsubmit="addNewSong(event)" class="form-group">
+                            <input type="text" id="new-title" placeholder="Mahnı adı" required class="form-input">
+                            <input type="text" id="new-album" placeholder="Albom / İfaçı adı" required class="form-input">
+                            
+                            <div style="display: flex; flex-direction: column; gap: 6px;">
+                                <label style="font-size: 13px; color: #a7a7a7;">Şəkil Faylı Seçin (Boş qala bilər):</label>
+                                <input type="file" id="new-cover-file" accept="image/*" class="form-input">
+                            </div>
+                            
+                            <div style="display: flex; flex-direction: column; gap: 6px;">
+                                <label style="font-size: 13px; color: #a7a7a7;">MP3 Fayl Seçin:</label>
+                                <input type="file" id="new-audio-file" accept=".mp3,audio/mpeg" required class="form-input">
+                            </div>
+
+                            <button type="submit" class="form-btn">Əlavə et</button>
+                        </form>
+                    </div>
+                `;
+            } else if (page === 'login') {
+                content.innerHTML = ` 
+                    <div class="form-container">
+                        <h1 class="form-title">İstifadəçi Qeydiyyatı</h1>
+                        <form onsubmit="handleLogin(event)" class="form-group">
+                            <div>
+                                <label class="form-label">İstifadəçi adı:</label>
+                                <input type="text" id="input-name" placeholder="Adınızı daxil edin" required class="form-input" style="margin-top: 6px;">
+                            </div>
+                            <div>
+                                <label class="form-label">Email ünvanı:</label>
+                                <input type="email" id="input-email" placeholder="example@mail.com" required class="form-input" style="margin-top: 6px;">
+                            </div>
+                            <div>
+                                <label class="form-label">Şifrə:</label>
+                                <input id="password" type="password" placeholder="••••••••" required class="form-input" style="margin-top: 6px;">
+                            </div>
+                            <button type="submit" class="form-btn">Qeydiyyatdan keç</button>
+                        </form>
+                    </div>
+                `;
+            }
+        }
+
+        function renderHome(list) {
+            const content = document.getElementById('content-area');
+            const popularSongs = [...list].sort((a, b) => b.views - a.views).slice(0, 3);
+            
+            let popularHTML = popularSongs.map((song) => {
+                const index = mahnilar.findIndex(m => m.id === song.id);
+                return createCardHTML(song, index);
+            }).join('');
+
+            let allHTML = list.map((song) => {
+                const index = mahnilar.findIndex(m => m.id === song.id);
+                return createCardHTML(song, index);
+            }).join('');
+
+            content.innerHTML = `
+                <div style="display: flex; flex-direction: column; gap: 30px;">
+                    <div>
+                        <h1 style="font-size: 24px; font-weight: bold; color: #1DB954; margin-bottom: 16px; display: flex; align-items: center; gap: 10px;">
+                            <i class="fa-solid fa-fire" style="color: #f97316;"></i> Populyarlar
+                        </h1>
+                        <div class="song-grid">
+                            ${popularHTML}
+                        </div>
+                    </div>
+
+                    <div>
+                        <h1 style="font-size: 24px; font-weight: bold; color: #ffffff; margin-bottom: 16px;">Bütün Mahnılar</h1>
+                        <div class="song-grid">
+                            ${allHTML.length > 0 ? allHTML : '<p style="color: #a7a7a7;">Heç bir mahnı yoxdur.</p>'}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderCustomList(list, titleText) {
+            const content = document.getElementById('content-area');
+            let cardsHTML = list.map((song) => {
+                const index = mahnilar.findIndex(m => m.id === song.id);
+                return createCardHTML(song, index);
+            }).join('');
+
+            content.innerHTML = `
+                <div>
+                    <h1 style="font-size: 28px; font-weight: bold; color: #1DB954; margin-bottom: 20px;">${titleText}</h1>
+                    <div class="song-grid">
+                        ${cardsHTML.length > 0 ? cardsHTML : '<p style="color: #a7a7a7;">Bu siyahıda hələ heç nə yoxdur.</p>'}
+                    </div>
+                </div>
+            `;
+        }
+
+        function createCardHTML(song, index) {
+            return `
+                <div class="song-card">
+                    <div class="card-actions">
+                        <button onclick="toggleLike(event, ${index})" title="Bəyən" class="action-btn">
+                            <i class="fa-${song.isLiked ? 'solid text-red' : 'regular'} fa-heart"></i>
+                        </button>
+                        <button onclick="deleteSong(event, ${index})" title="Mahnını sil" class="action-btn delete">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </div>
+                    
+                    <div onclick="selectSong(${index})">
+                        <img src="${song.cover || 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=300&h=300&fit=crop'}" class="song-cover">
+                        <h3 class="song-title">${song.title}</h3>
+                        <p class="song-album">${song.album}</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        function deleteSong(event, index) {
+            event.stopPropagation();
+            const songName = mahnilar[index].title;
+            if (confirm(`"${songName}" mahnısını silmək istədiyinizdən əminsinizmi?`)) {
+                if (currentSongIndex === index) {
+                    audio.pause();
+                    audio.src = '';
+                    isPlaying = false;
+                    document.getElementById('player-title').innerText = "Mahnı seçilməyib";
+                    document.getElementById('player-artist').innerText = "-";
+                    document.getElementById('play-btn-icon').className = 'fa-solid fa-play';
+                    document.getElementById('player-cover').classList.add('hidden');
+                    document.getElementById('player-icon-placeholder').classList.remove('hidden');
+                }
+
+                mahnilar.splice(index, 1);
+                updateLikedCount();
+                
+                if (activePage === 'home') renderHome(mahnilar);
+                else if (activePage === 'liked') filterLikedSongs();
+                else if (activePage === 'search') filterSongs();
+            }
+        }
+
+        function filterSongs() {
+            const query = document.getElementById('search-input')?.value.toLowerCase() || '';
+            const resultsDiv = document.getElementById('search-results');
+            
+            const filtered = mahnilar.filter(song => 
+                song.title.toLowerCase().includes(query) || 
+                song.album.toLowerCase().includes(query)
+            );
+
+            if (resultsDiv) {
+                resultsDiv.innerHTML = filtered.map((song) => {
+                    const index = mahnilar.findIndex(m => m.id === song.id);
+                    return createCardHTML(song, index);
+                }).join('');
+            }
+        }
+
+        function selectSong(index) {
+            currentSongIndex = index;
+            const song = mahnilar[index];
+            document.getElementById('player-title').innerText = song.title;
+            document.getElementById('player-artist').innerText = song.album;
+            
+            const coverImg = document.getElementById('player-cover');
+            const placeholder = document.getElementById('player-icon-placeholder');
+            coverImg.src = song.cover || 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=300&h=300&fit=crop';
+            coverImg.classList.remove('hidden');
+            placeholder.classList.add('hidden');
+            
+            audio.src = song.audioUrl;
+            playSong(true);
+        }
+
+        function playSong(forcePlay = false) {
+            const icon = document.getElementById('play-btn-icon');
+            if (!audio.src) return;
+
+            if (isPlaying && !forcePlay) {
+                audio.pause();
+                isPlaying = false;
+                icon.className = 'fa-solid fa-play';
+            } else {
+                audio.play();
+                isPlaying = true;
+                icon.className = 'fa-solid fa-pause';
+            }
+        }
+
+        function beforeSong() {
+            if (mahnilar.length === 0) return;
+            if (currentSongIndex === null) { selectSong(0); return; }
+            currentSongIndex = (currentSongIndex - 1 + mahnilar.length) % mahnilar.length;
+            selectSong(currentSongIndex);
+        }
+
+        function nextSong() {
+            if (mahnilar.length === 0) return;
+            if (currentSongIndex === null) { selectSong(0); return; }
+            currentSongIndex = (currentSongIndex + 1) % mahnilar.length;
+            selectSong(currentSongIndex);
+        }
+
+        audio.ontimeupdate = function() {
+            if (audio.duration) {
+                const progress = (audio.currentTime / audio.duration) * 100;
+                document.getElementById('seek-bar').value = progress;
+                document.getElementById('current-time').innerText = formatTime(audio.currentTime);
+                document.getElementById('total-duration').innerText = formatTime(audio.duration);
+            }
+        };
+
+        audio.onended = function() { nextSong(); };
+
+        function changeSeek() {
+            const seekBar = document.getElementById('seek-bar');
+            if (audio.duration) { audio.currentTime = (seekBar.value * audio.duration) / 100; }
+        }
+
+        function changeVolume() {
+            const volumeBar = document.getElementById('volume-bar');
+            audio.volume = volumeBar.value;
+        }
+
+        function formatTime(seconds) {
+            let min = Math.floor(seconds / 60);
+            let sec = Math.floor(seconds % 60);
+            if (min < 10) min = '0' + min;
+            if (sec < 10) sec = '0' + sec;
+            return `${min}:${sec}`;
+        }
+    </script>
+</body>
+</html>
